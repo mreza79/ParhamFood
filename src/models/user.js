@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const userSchema = new mongoose.Schema({
-    mobilePhone: {
+    phoneNumber: {
         type: String,
         unique: true,
         required: true,

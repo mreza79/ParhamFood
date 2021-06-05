@@ -7,7 +7,7 @@ const restaurantSchema = new mongoose.Schema(
       type: String,
       lowercase: true,
       trim: true,
-      required: true,
+      // required: true,
     },
     region: {
       type: Number,
@@ -15,12 +15,12 @@ const restaurantSchema = new mongoose.Schema(
     },
     address: {
       type: String,
-      location: { type: [Number], index: { type: '2dsphere', sparse: true}},
-      required: true,
+      // location: { type: [Number], index: { type: "2dsphere", sparse: true } },
+      // required: true,
     },
     serviceRegion: {
       type: [Number],
-      required: true,
+      // required: true,
     },
     workingHour: [
       {
@@ -29,18 +29,27 @@ const restaurantSchema = new mongoose.Schema(
         },
         periods: [
           {
-            start: { type: Date },
-            end: { type: Date },
+            start: {
+              type: Date,
+            },
+            end: {
+              type: Date,
+            },
           },
         ],
       },
     ],
     deliveryTime: {
-        type: Date,
+      type: Date,
     },
     deliveryFee: {
-        type: Number,
-        required: true,
+      type: Number,
+      // required: true,
+    },
+    manager: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Manager",
     },
   },
   {
