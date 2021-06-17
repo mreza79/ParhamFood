@@ -5,6 +5,7 @@ const router = new express.Router()
 
 //create manager
 router.post('/managers', async (req, res) => { 
+    // const { manager } = req.body
     const manager = new Manager(req.body)
 
     try {

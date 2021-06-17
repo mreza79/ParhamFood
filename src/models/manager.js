@@ -36,6 +36,10 @@ const managerSchema = new mongoose.Schema(
         }
       },
     },
+    restaurant: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Restaurant"
+    },
     tokens: [
       {
         token: {
@@ -50,11 +54,11 @@ const managerSchema = new mongoose.Schema(
   }
 );
 
-managerSchema.virtual("restaurants", {
-  ref: "Restaurant",
-  localField: "_id",
-  foreignField: "manager",
-});
+// managerSchema.virtual("restaurants", {
+//   ref: "Restaurant",
+//   localField: "_id",
+//   foreignField: "manager",
+// });
 
 //Object to json
 managerSchema.methods.toJSON = function () {
