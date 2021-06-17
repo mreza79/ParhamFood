@@ -9,7 +9,7 @@ const auth = async (req, res, next) => {
       _id: decoded._id,
       "tokens.token": token,
     });
-    console.log(token)
+    // console.log(token)
     if (!manager) {
       throw new Error();
     }
