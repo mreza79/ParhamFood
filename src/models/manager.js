@@ -56,6 +56,7 @@ managerSchema.virtual("restaurants", {
   foreignField: "manager",
 });
 
+//Object to json
 managerSchema.methods.toJSON = function () {
   const manager = this;
   const managerObject = manager.toObject();
@@ -67,11 +68,13 @@ managerSchema.methods.toJSON = function () {
   return managerObject;
 };
 
+//Generate JWT
 managerSchema.methods.generateAuthToken = async function () {
   const manager = this;
   const token = jwt.sign(
     { _id: manager._id.toString() },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    { expiresIn: "30 minutes" }
   );
 
   manager.tokens = manager.tokens.concat({ token });
@@ -80,6 +83,7 @@ managerSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
+//Find manager in DB
 managerSchema.statics.findByCredentials = async (email, password) => {
   const manager = await Manager.findOne({ email });
 
@@ -96,6 +100,7 @@ managerSchema.statics.findByCredentials = async (email, password) => {
   return manager;
 };
 
+//hash password before adding to db
 managerSchema.pre("save", async function (next) {
   const manager = this;
 
@@ -105,6 +110,7 @@ managerSchema.pre("save", async function (next) {
   next();
 });
 
+//remove manager and every restaurant that he has own
 managerSchema.pre("remove", async function (next) {
   const manager = this;
   await Restaurant.deleteMany({ owner: manager._id });

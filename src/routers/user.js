@@ -3,6 +3,7 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
+//Create user
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
 
@@ -15,9 +16,11 @@ router.post('/users', async (req, res) => {
     }
 })
 
+//Login user
 router.post('/users/login', async (req, res) => {
+    const { phoneNumber, password } = req.body
     try {
-        const user = await User.findByCredentials(req.body.phoneNumber, req.body.password)
+        const user = await User.findByCredentials(phoneNumber, password)
         const token = await user.generateAuthToken()
         res.send({ user, token })
     } catch (e) {
@@ -25,6 +28,7 @@ router.post('/users/login', async (req, res) => {
     }
 })
 
+//Logout user session
 router.post('/users/logout', auth, async (req, res) => {
     try {
         req.user.tokens = req.user.tokens.filter((token) => token.token !== req.token)
@@ -35,6 +39,7 @@ router.post('/users/logout', auth, async (req, res) => {
     }
 })
 
+//Logout All user --remove jwt
 router.post('/users/logoutAll', auth, async (req, res) => {
     try {
         req.user.tokens = []
@@ -45,10 +50,13 @@ router.post('/users/logoutAll', auth, async (req, res) => {
     }
 })
 
+//Optional
+//Get this user
 router.get('/users/me', auth, async (req, res) => {
     res.send(req.user)
 })
 
+//edit user by name, phone number, password, address, region
 router.patch('/users/me', auth, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['name', 'phoneNumber', 'password', 'address', 'region']
@@ -65,6 +73,7 @@ router.patch('/users/me', auth, async (req, res) => {
     }
 })
 
+////delete user
 router.delete('/users/me', auth, async (req, res) => {
     try {
         await req.user.remove()

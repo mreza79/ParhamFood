@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const userSchema = new mongoose.Schema({
     phoneNumber: {
-        type: String,
+        type: Number,
         unique: true,
         required: true,
         trim: true,
@@ -22,7 +22,14 @@ const userSchema = new mongoose.Schema({
         minlength: 7,
         trim: true,
         validate(value) {
-            if (value.toLowerCase().includes('password')) {
+            if ( !validator.isStrongPassword(value, [
+                  (minLength = 8),
+                  (minLowercase = 1),
+                  (minUppercase = 1),
+                  (minNumbers = 1),
+                  (minSymbols = 1),
+                ])
+              )  {
                 throw new Error('Password cannot contain "password"')
             }
         }
@@ -32,7 +39,7 @@ const userSchema = new mongoose.Schema({
     },
     address: {
         type: String,
-        location: { type: [Number], index: { type: '2dsphere', sparse: true}}
+        //location: { type: [Number], index: { type: '2dsphere', sparse: true}}
     },
     region: {
         type: String,
@@ -60,7 +67,7 @@ userSchema.methods.toJSON = function () {
 
 userSchema.methods.generateAuthToken = async function () {
     const user = this
-    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '30 minutes' })
 
     user.tokens = user.tokens.concat({ token })
     await user.save()
@@ -95,7 +102,6 @@ userSchema.pre('save', async function (next) {
 
 userSchema.pre('remove', async function (next) {
     const user = this
-    await Task.deleteMany({ owner: user._id })
     next()
 })
 

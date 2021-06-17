@@ -3,7 +3,8 @@ const Manager = require('../models/manager')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
-router.post('/managers', async (req, res) => {
+//create manager
+router.post('/managers', async (req, res) => { 
     const manager = new Manager(req.body)
 
     try {
@@ -15,9 +16,11 @@ router.post('/managers', async (req, res) => {
     }
 })
 
-router.post('/managers/login', async (req, res) => {
+// login manager
+router.post('/managers/login', async (req, res) => { 
+    const { email, password } = req.body
     try {
-        const manager = await Manager.findByCredentials(req.body.email, req.body.password)
+        const manager = await Manager.findByCredentials(email, password)
         const token = await manager.generateAuthToken()
         res.send({ manager, token })
     } catch (e) {
@@ -25,7 +28,8 @@ router.post('/managers/login', async (req, res) => {
     }
 })
 
-router.post('/managers/logout', auth, async (req, res) => {
+//logout current manager in session
+router.post('/managers/logout', auth, async (req, res) => { 
     try {
         req.manager.tokens = req.manager.tokens.filter((token) => token.token !== req.token)
         await req.manager.save()
@@ -35,7 +39,8 @@ router.post('/managers/logout', auth, async (req, res) => {
     }
 })
 
-router.post('/managers/logoutAll', auth, async (req, res) => {
+//logout all sessions that have a specific manager
+router.post('/managers/logoutAll', auth, async (req, res) => { 
     try {
         req.manager.tokens = []
         await req.manager.save()
@@ -45,11 +50,13 @@ router.post('/managers/logoutAll', auth, async (req, res) => {
     }
 })
 
-router.get('/managers/me', auth, async (req, res) => {
+//get current manager !!!
+router.get('/managers/me', auth, async (req, res) => { 
     res.send(req.manager)
 })
 
-router.patch('/managers/me', auth, async (req, res) => {
+//edit manager by email, password, restaurant
+router.patch('/managers/me', auth, async (req, res) => { 
     const updates = Object.keys(req.body)
     const allowedUpdates = ['email', 'password', 'restaurants']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -65,7 +72,8 @@ router.patch('/managers/me', auth, async (req, res) => {
     }
 })
 
-router.delete('/managers/me', auth, async (req, res) => {
+//delete manager in session
+router.delete('/managers/me', auth, async (req, res) => { 
     try {
         await req.manager.remove()
         res.send(req.manager)
