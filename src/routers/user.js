@@ -1,11 +1,16 @@
 const express = require('express')
 const User = require('../models/user')
-const auth = require('../middleware/auth')
+const auth = require('../middleware/authUser')
+const Restaurant = require('../models/restaurant')
 const router = new express.Router()
 
 //Create user
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
+    const date = new Date(2022, 3, 21)
+    if (Date.now() <= date){
+        user.cash += 1000000
+    }
 
     try {
         await user.save()
@@ -21,10 +26,20 @@ router.post('/users/login', async (req, res) => {
     const { phoneNumber, password } = req.body
     try {
         const user = await User.findByCredentials(phoneNumber, password)
+        console.log(user)
         const token = await user.generateAuthToken()
         res.send({ user, token })
     } catch (e) {
         res.status(400).send(e)
+    }
+})
+
+router.get('/users/restaurants', auth, async (req, res) => {
+    try {
+        const restaurants = await Restaurant.find({})
+        res.send({ restaurants })
+    } catch (e) {
+        res.status(500).send(e)
     }
 })
 

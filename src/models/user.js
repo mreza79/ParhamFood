@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const userSchema = new mongoose.Schema({
     phoneNumber: {
-        type: Number,
+        type: String,
         unique: true,
         required: true,
         trim: true,
@@ -82,8 +82,10 @@ userSchema.methods.generateAuthToken = async function () {
     return token
 }
 
-userSchema.statics.findByCredentials = async (email, password) => {
-    const user = await user.findOne({ email })
+userSchema.statics.findByCredentials = async (phoneNumber, password) => {
+    console.log(phoneNumber)
+    const user = await User.findOne({ phoneNumber })
+    console.log(user)
 
     if (!user) {
         throw new Error('Unable to login')
@@ -112,7 +114,7 @@ userSchema.pre('remove', async function (next) {
     next()
 })
 
-const user = mongoose.model('user', userSchema)
+const User = mongoose.model('User', userSchema)
 
 
-module.exports = user
+module.exports = User

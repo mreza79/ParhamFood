@@ -66,7 +66,7 @@ router.get("/managers/me", auth, async (req, res) => {
 });
 
 //edit manager by email, password, restaurant
-router.patch("/managers/me", auth, async (req, res) => {
+/* router.patch("/managers/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["email", "password", "restaurants"];
   const isValidOperation = updates.every((update) =>
@@ -83,7 +83,7 @@ router.patch("/managers/me", auth, async (req, res) => {
   } catch (e) {
     res.status(400).send(e);
   }
-});
+}); */
 
 //delete manager in session
 router.delete("/managers/me", auth, async (req, res) => {
