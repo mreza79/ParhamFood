@@ -7,7 +7,7 @@ const restaurantSchema = new mongoose.Schema(
       type: String,
       lowercase: true,
       trim: true,
-      // required: true,
+      required: true,
     },
     region: {
       type: Number,
@@ -46,10 +46,24 @@ const restaurantSchema = new mongoose.Schema(
       type: Number,
       // required: true,
     },
+    comments: [
+      {
+        userComment: {
+          type: String,
+        },
+        ManagerComment: {
+          type: String,
+        },
+      },
+    ],
+    menu: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Menu",
+    },
     manager: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "Manager",
+      // required: true,
     },
   },
   {
@@ -57,6 +71,13 @@ const restaurantSchema = new mongoose.Schema(
   }
 );
 
-const Restaurant = mongoose.model("Task", restaurantSchema);
+restaurantSchema.virtual("menus", {
+  ref: "Menu",
+  localField: "_id",
+  foreignField: "restaurant",
+  default: () => ({}),
+});
+
+const Restaurant = mongoose.model("Restaurant", restaurantSchema);
 
 module.exports = Restaurant;

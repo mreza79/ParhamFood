@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema({
     region: {
         type: String,
     },
+    cash: {
+        type: Number, 
+    }, 
     tokens: [{
         token: {
             type: String,

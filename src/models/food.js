@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
+// const validator = require('validator')
 
-const taskSchema = new mongoose.Schema({
+const foodSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
@@ -15,14 +15,13 @@ const taskSchema = new mongoose.Schema({
     },
     menu: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Menu'
+        ref: "Menu"
     }
 }, {
     timestamps: true
 })
 
-const Task = mongoose.model('Task', taskSchema)
+const Food = mongoose.model('Food', foodSchema)
 
 
-module.exports = Task
+module.exports = Food

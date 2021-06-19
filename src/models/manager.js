@@ -38,7 +38,8 @@ const managerSchema = new mongoose.Schema(
     },
     restaurant: { 
       type: mongoose.Schema.Types.ObjectId, 
-      ref: "Restaurant"
+      ref: "Restaurant", 
+      // required: true
     },
     tokens: [
       {
