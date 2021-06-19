@@ -144,7 +144,7 @@ router.post("/restaurants/:id/menu", auth, async (req, res) => {
   const menu = new Menu({ ...req.body, restaurant: _id });
 
   try {
-    console.log(menu);
+    // console.log(menu);
     await menu.save();
     res.send(menu);
   } catch (e) {

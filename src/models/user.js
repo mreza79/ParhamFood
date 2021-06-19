@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema({
     cash: {
         type: Number, 
     }, 
+    orderList: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Food"
+    }],
     tokens: [{
         token: {
             type: String,
