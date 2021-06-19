@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema(
   {
+    userName: {
+        type:String
+    },
     userComment: {
       type: String,
       rate: {
@@ -12,10 +15,17 @@ const commentSchema = new mongoose.Schema(
       },
       trim: true,
     },
+    managerName: {
+        type: String
+    },
     managerComment: {
       type: String,
       trim: true,
     },
+    restaurant: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Restaurant",
+    }
   },
   {
     timestamps: true,

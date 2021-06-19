@@ -65,6 +65,24 @@ router.get("/managers/me", auth, async (req, res) => {
   res.send(req.manager);
 });
 
+//Add comment to user
+router.post("/manager/comments/:id", auth, async (req, res) => {
+  const id = req.params.id; //restaurant id
+  const { userComment, rate } = req.body;
+  const comment = new Comment({
+    userName: req.user.name,
+    userComment,
+    rate,
+    restaurant: id,
+  });
+  try {
+    await comment.save();
+    res.status(201).send({ comment });
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
 //edit manager by email, password, restaurant
 /* router.patch("/managers/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);

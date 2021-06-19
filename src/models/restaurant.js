@@ -48,7 +48,13 @@ const restaurantSchema = new mongoose.Schema(
     },
     comments: [
       {
+        userName: {
+          type: String,
+        },
         userComment: {
+          type: String,
+        },
+        ManagerName: {
           type: String,
         },
         ManagerComment: {
@@ -75,7 +81,6 @@ restaurantSchema.virtual("menus", {
   ref: "Menu",
   localField: "_id",
   foreignField: "restaurant",
-  default: () => ({}),
 });
 
 const Restaurant = mongoose.model("Restaurant", restaurantSchema);
