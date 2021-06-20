@@ -73,7 +73,7 @@ router.get("/restaurants/:id", auth, async (req, res) => {
     }
     console.log(manager.restaurant._id)
     const RID = manager.restaurant._id
-    console.log(RID)
+    // console.log(RID)
     const restaurant = await Restaurant.findOne({ _id: RID });
     console.log(restaurant);
     res.send(restaurant);
@@ -103,10 +103,14 @@ router.patch("/restaurants/:id", auth, async (req, res) => {
     return res.status(400).send({ error: "Invalid Updates!" });
 
   try {
-    const restaurant = await Restaurant.findOne({
-      _id: req.params.id,
-      //   owner: req.manager._id,
-    });
+    const manager = await Manager.findOne({ _id });
+    if (!manager) {
+      return res.status(404).send();
+    }
+    // console.log(manager.restaurant._id)
+    const RID = manager.restaurant._id
+    // console.log(RID)
+    const restaurant = await Restaurant.findOne({ _id: RID });
 
     if (!restaurant) {
       return res.status(404).send();
@@ -173,9 +177,15 @@ router.post(
 //ADD menu to restaurant
 router.post("/restaurants/:id/menu", auth, async (req, res) => {
   const _id = req.params.id;
-  const menu = new Menu({ ...req.body, restaurant: _id });
-
+  
   try {
+    const manager = await Manager.findOne({ _id });
+    
+    if (!manager) {
+      return res.status(404).send();
+    }
+
+    const menu = new Menu({ ...req.body, restaurant: manager.restaurant._id });
     // console.log(menu);
     await menu.save();
     res.send(menu);
@@ -196,9 +206,13 @@ router.patch("/restaurants/:id/menu", auth, async (req, res) => {
     return res.status(400).send({ error: "Invalid Updates!" });
 
   try {
-    const restaurant = await Restaurant.findOne({
-      _id: req.params.id,
-    });
+    const manager = await Manager.findOne({ _id });
+    if (!manager) {
+      return res.status(404).send();
+    }
+    console.log(manager.restaurant._id)
+    const restaurant = await Restaurant.findOne({ _id: manager.restaurant._id });
+    console.log(restaurant);
 
     if (!restaurant) {
       return res.status(404).send();
