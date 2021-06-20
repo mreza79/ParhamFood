@@ -26,7 +26,7 @@ const restaurantSchema = new mongoose.Schema(
     workingHour: [
       {
         day: {
-          type: Date,
+          type: [Strings],
         },
         periods: [
           {
