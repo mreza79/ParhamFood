@@ -35,14 +35,58 @@ router.post("/users/login", async (req, res) => {
 
 //get restaurants for user
 router.get("/users/restaurants", auth, async (req, res) => {
+  const match = {};
+  const sort = {};
+
+  if (req.query.status) {
+    match.status = req.query.status;
+  }
+  if (req.query.foodName) {
+    match.foodName = req.query.foodName;
+  }
+  if (req.query.region) {
+    match.region = req.query.region;
+  }
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(":");
+    sort[part[0]] = parts[1] === "desc" ? -1 : 1;
+  }
   try {
-    const restaurants = await Restaurant.find({});
-    res.send({ restaurants });
+    await Menu.populate({
+      path: "foods",
+      match,
+      options: {
+        //   limit: parseInt(req.query.limit),
+        //   skip: parseInt(req.query.skip),
+        sort,
+      },
+    }).execPopulate();
+    res.status(200).send(req.user.tasks);
   } catch (e) {
     res.status(500).send(e);
   }
 });
 
+//!!!!!Foods in the same restaurant
+router.post("/users/order", auth, async (req, res) => {
+  const foodList = req.body;
+  try {
+    req.user.orderList.push(foodList);
+    await req.user.save();
+    res.send(req.user.orderList);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
+router.get("users/order", auth, async (req, res) => {
+  const orders = req.user.orderList;
+  try {
+    res.status(200).send(orders);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
 //Logout user session
 router.post("/users/logout", auth, async (req, res) => {
   try {
