@@ -1,8 +1,12 @@
 const express = require("express");
+const multer = require("multer");
+const sharp = require("sharp");
+
 const Restaurant = require("../models/restaurant");
 const Food = require("../models/food");
 const auth = require("../middleware/auth");
 const Menu = require("../models/menu");
+
 const router = new express.Router();
 
 //create restaurant
@@ -124,19 +128,41 @@ router.get("/restaurants/:id/menu", auth, async (req, res) => {
   }
 });
 
-//Add food to menu
-router.post("/restaurants/menu/:id/foods", auth, async (req, res) => {
-  const _id = req.params.id;
-  const food = new Food({ ...req.body, menu: _id });
+const upload = multer({
+  limits: {
+    fileSize: 1000000,
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error("Please upload an image"));
+    }
 
-  try {
-    await food.save();
-    // console.log(food);
-    res.send(food);
-  } catch (e) {
-    res.status(500).send(e);
-  }
+    cb(undefined, true);
+  },
 });
+
+//Add food to menu
+router.post(
+  "/restaurants/menu/:id/foods",
+  auth,
+  upload.single("image"),
+  async (req, res) => {
+    const _id = req.params.id;
+    const buffer = await sharp(req.file.buffer)
+      .resize({ width: 250, height: 250 })
+      .png()
+      .toBuffer();
+    const food = new Food({ ...req.body, image: buffer, menu: _id });
+
+    try {
+      await food.save();
+      // console.log(food);
+      res.send(food);
+    } catch (e) {
+      res.status(500).send(e);
+    }
+  }
+);
 
 //ADD menu to restaurant
 router.post("/restaurants/:id/menu", auth, async (req, res) => {

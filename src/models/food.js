@@ -13,6 +13,9 @@ const foodSchema = new mongoose.Schema({
     status: {
         type: Boolean
     },
+    image: {
+        type: Buffer,
+    },
     menu: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Menu"
