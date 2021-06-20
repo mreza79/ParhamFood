@@ -2,7 +2,7 @@
   <div>
     <v-card class="mx-auto" max-width="60%" mn-height="100%">
       <v-card-title class="justify-center">
-        نام رستوارن
+        نام رستوران
       </v-card-title>
       <v-container fluid>
         <v-row  class="fill-height">
