@@ -67,13 +67,16 @@ router.get("/restaurants/:id", auth, async (req, res) => {
   const _id = req.params.id;
 
   try {
-    const manager = await Manager.findOne({ _id })
-
+    const manager = await Manager.findOne({ _id });
     if (!manager) {
       return res.status(404).send();
     }
-    const restaurantID = manager.restaurant._id
-    res.send(restaurantID);
+    console.log(manager.restaurant._id)
+    const RID = manager.restaurant._id
+    console.log(RID)
+    const restaurant = await Restaurant.findOne({ _id: RID });
+    console.log(restaurant);
+    res.send(restaurant);
   } catch (e) {
     res.status(500).send(e);
   }
