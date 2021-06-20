@@ -11,7 +11,7 @@ router.post("/managers", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const restaurant = new Restaurant(req.body.restaurant);
-  console.log(req.body)
+  // console.log(req.body)
   await restaurant.save();
   try {
     const manager = new Manager({ email, password, restaurant });
