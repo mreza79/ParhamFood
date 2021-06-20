@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
                   (minSymbols = 1),
                 ])
               )  {
-                throw new Error('Password cannot contain "password"')
+                throw new Error('Password is invalid')
             }
         }
     },

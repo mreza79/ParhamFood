@@ -6,6 +6,7 @@ const Restaurant = require("../models/restaurant");
 const Food = require("../models/food");
 const auth = require("../middleware/auth");
 const Menu = require("../models/menu");
+const Manager = require("../models/manager");
 
 const router = new express.Router();
 
@@ -66,11 +67,13 @@ router.get("/restaurants/:id", auth, async (req, res) => {
   const _id = req.params.id;
 
   try {
-    const restaurant = await Restaurant.findOne({ _id });
-    if (!restaurant) {
+    const manager = await Manager.findOne({ _id })
+
+    if (!manager) {
       return res.status(404).send();
     }
-    res.send(restaurant);
+    const restaurantID = manager.restaurant._id
+    res.send(restaurantID);
   } catch (e) {
     res.status(500).send(e);
   }

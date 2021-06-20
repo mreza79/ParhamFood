@@ -8,6 +8,7 @@ const restaurantSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       required: true,
+      unique: true,
     },
     region: {
       type: Number,
@@ -40,7 +41,7 @@ const restaurantSchema = new mongoose.Schema(
       },
     ],
     deliveryTime: {
-      type: Date,
+      type: Number,
     },
     deliveryFee: {
       type: Number,

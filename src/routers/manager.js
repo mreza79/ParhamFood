@@ -1,4 +1,5 @@
 const express = require("express");
+const redis = require("resdis");
 const Manager = require("../models/manager");
 const Restaurant = require("../models/restaurant");
 const auth = require("../middleware/auth");
@@ -17,8 +18,9 @@ router.post("/managers", async (req, res) => {
     await manager.save();
     // const _id = manager.restaurant._id //restaurant id
     const token = await manager.generateAuthToken();
+
     // restaurant id
-    res.status(201).send({ manager, token });
+    res.status(200).send({ manager, token });
   } catch (e) {
     res.status(400).send(e);
   }
@@ -30,7 +32,19 @@ router.post("/managers/login", async (req, res) => {
   try {
     const manager = await Manager.findByCredentials(email, password);
     const token = await manager.generateAuthToken();
-    res.send({ manager, token });
+    res.cookie("access_token", token, {
+      // secure: true,
+      httpOnly: true,
+    });
+    redis.set(
+      user_id,
+      JSON.stringify({
+        refresh_token: refresh_token,
+        expires: refresh_token_maxage,
+      }),
+      redis.print
+    );
+    res.status(200).send({ manager, token });
   } catch (e) {
     res.status(400).send(e);
   }
@@ -42,6 +56,8 @@ router.post("/managers/logout", auth, async (req, res) => {
     req.manager.tokens = req.manager.tokens.filter(
       (token) => token.token !== req.token
     );
+    redis.del(req.body._id);
+    res.clearCookie("access_token");
     await req.manager.save();
     res.send();
   } catch (e) {
